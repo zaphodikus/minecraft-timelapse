@@ -1,8 +1,11 @@
-; make a backup of C:\Users\conradb\AppData\Roaming\.minecraft\saves\<game>
+; An AutoHotKey script.
+; Make a backup of your game file since this script deletes your build - C:\Users\<username>\AppData\Roaming\.minecraft\saves\<game>
 ; Minecraft uses values of 0 to 24000 for times of day
 ; morning is 21000 , sunset 11000
 ; remember to turn off clouds, to be in survival mode. And to press F1 to hide the UI
 ; NOTE, you must be in fly mode as well!
+;
+; Any parameters in the script that need to !!EDIT!! or do something to are marked 1. 2. 3. and so on
 #SingleInstance force
 #Warn
 
@@ -15,18 +18,22 @@ Return
 
 
 F10::
-	SetKeyDelay, 30
+	SetKeyDelay, 30     ; longer if your PC is not high end
 	global con_open_delay
-	con_open_delay :=1040
+	con_open_delay :=140 ; longer if commands get completely skipped and you end up seeign the inventory or worldedit help screen appearing
 
+	; We log all traces to a file in this directory, you can either tail the log file, or open it in a good quality text editor.
 	global mylogger
 	mylogger:= new Logger("log.txt")
-	debug := false
+	debug := false ; Make this True if you want to just run the macro while having notepad.exe open instead of minecraft
 
 	; please edit as needed
+	; 1. !!EDIT!! find your 2 high points on "opposite corners" of the build you want to delete
+	; 2. You can make a backup copy of the build and restore it
 	pos1:= new Point(-73, 142, -460)
-	pos2:= new Point(-242, 141, -314)   ; Use a 2 block thick area to handle skipped commands
-	end_altitude := 70  				; or sea-level (62) wherever you prefer
+	pos2:= new Point(-242, 141, -314)   ; Not the Y value is one less, we use a 2 block thick area to handle skipped command loops.
+	; 3. !!EDIT!!
+	end_altitude := 70  				; 1 above the last foundation block you want to wipe. or sea-level (62) wherever you prefer
 	start_altitude:= pos1.y
 	
 	ConsoleCommand("weather clear")
@@ -37,16 +44,22 @@ F10::
 	ConsoleCommand("/pos1")
 	ConsoleTeleport(pos2)
 	ConsoleCommand("/pos2")
+	; 4. !!EDIT!! choose a place which will be where your avatar flies an films the vide from.
+	;    we dont change your orientation when teleporting, so line up your camera now.
+	;    edit the line below
+	viewpoint := new Point(-242, 136, -314)
+	
 	; return player to viewpoint
-	ConsoleCommand("tp @p -242 136 -314")
+	ConsoleTeleport(viewpoint ) ; /tp @p -242 136 -314"
 
+	; 5. !!EDIT!! optionally change the start end end minecraft times
 	sunrise := 21000 
 	sunset := 22000 + 24000  ; sunset on previous day since we are going backwards
 	time := sunset
 	s := % "time set "  time
 	ConsoleCommand( s )
 	steps:= start_altitude - end_altitude
-	interval := Floor( Abs(sunrise - sunset)/ (steps +1))
+	interval := Floor( Abs(sunrise - sunset)/ (steps +1)) ; ABS() since we are always going to go backwards in time, modify code if you want normal time "forwardness"
 	mylogger.log("=== DEBUG ===")
 	mylogger.log("sunset= " sunset)
 	mylogger.log("sunrise= " sunrise)
@@ -81,8 +94,8 @@ F10::
 			Sleep 100
 		}
 	}
-	; return player to viewpoint
-	ConsoleCommand("tp @p -242 136 -314")
+	; return player to viewpoint in case they moved during the recording
+	ConsoleTeleport(viewpoint) ; /tp @p -242 136 -314"
 Return
 
 ; =======================================================
