@@ -1,11 +1,16 @@
 # README
-A general minecraft related dumping ground.
+A general minecraft and AHK related dumping ground.
+Get Autohotkey here https://www.autohotkey.com/
+
 ## AutoHotKey AHK scripts
  * mc_timelapse.ahk : a basic timelapse script using autohotkey
  * mc_delete_build.ahk : use WorldEdit to delete a minecraft scene, with a reverse timelapse
  * test_logging.ahk : test script to create my basic logging class
- 
+ * mountain-song.ahk : https://store.steampowered.com/app/313340/Mountain/ 
+ * gsteam_emojis.ahk
+
  # mc_timelapse.ahk
+[Source](mc_timelapse.ahk)
  A bit of explanation as to what is going on in this script. I used version 1.3 . AHK is a bizaire scripting language, for example these is an AHK version 2 out, but it's a rewrite and vastly different enough to have no support. So 1.3 is supported by a brilliant community, but is a hard languge to just pick up. I'll cover some AHK gotchas later.
  
  This is not the first AHK script I have written, it's a copy of my first script which does the same timelapse +screenshot thing in the Emyprion Galactic Survival game. [My EGS Game config Files on github.](https://github.com/zaphodikus/EGS-gameconfig)
@@ -28,6 +33,7 @@ Another tip is to turn off clouds entirely for these. If you are usign optifine 
 Finally the script takes screenshots using the in-game screenshot engine, it has to wait for each console to close. note, this is a long time. ```Sleep 5000``` mainly because the time and sun position actually takes a while to update in game.
 
 # mc_delete_build.ahk
+[Source](mc_delete_build.ahk)
 This is a refinement of the timelapse script earlier, it runs the time backwards instead, because it records us building a house backwards. And I wanted the run to look like it's moving normally in the backwards footage. In fact we are breaking the house or deleting it from the top downwards, and then just stitching the screenshots together in a video editor and reversing the clip. The final output looks like [this on youtube](https://youtu.be/MaagTF2Jms4)
 
 Classes in AHK are tricky, I add a point XYZ class and a logger class which simplified debugging a tonne. We use worldedit to create a 2 block high slice of the world at the top of the building, and just delete it usign the /replace command. We move the block down 1 block and repeat. This needs to be a 2 blocks deep slice to handle loop where the graphics are not yet caught up, as well as if a command get munched. If command get munched and garbled often, try increasing the typing delay value a bit, and also try increase the console opener delay
@@ -41,13 +47,14 @@ Classes in AHK are tricky, I add a point XYZ class and a logger class which simp
 
 ```
 # test_logging.ahk
+[Source](test_logging.ahk)
 It's just easier to build classes or pieces of code in isolation first.
 
 # AHK gothas
 It's a cool language, but some things will trip up the beginner, like:
 * Always use ```:=``` *never use ```=``` ,* it's annoying, but this code does absolutely nothing, without warning you that it has had no effect whatsoever. ```var1 = new MyClass()``` . You have to use ```:=``` at this point. 
 
-* One way to help is to add a directive ```#Warn``` . Other parameters to #Warn change the warnings a bit, but the basit ```#Warn``` is a big help. 
+* One way to help is to add a directive ```#Warn``` . Other parameters to #Warn change the warnings a bit, but the basic ```#Warn``` is a big help. 
 * AHK identifiers are not case sensitive at all. It also has no qualms about assignments that make no sense either.
 ```
 class Logger
@@ -63,3 +70,11 @@ logger := new Logger("log.txt")  ; <= Ha Ha Ha
 logger is now equal to logger, which is now actually uninitialized, and is still not case sensitive. All identifier types are in one namespace.
 
 * double quotes, you want to use them for strings, but when you do, they get addd to the string itself annoyingly, so you ahve to tell the parset, that the string comming up is a quoted string lik using ```%``` . Annoyingly you have to use ```, %``` quite often, and although the comma is optional, it makes readability worse, but makes your code do waht is should more often than not.
+
+# Mountain-Song
+[Source](mountain-song.ahk)
+Basically uncomment the song i nthe game you want and reload the script and press the hotkey - very dumb, not really refined tool
+
+# gsteam_emojis
+[Source](gsteam_emojis.ahk)
+Generated script using a python code, basically sends emoticons instead of characters, very simplistic
